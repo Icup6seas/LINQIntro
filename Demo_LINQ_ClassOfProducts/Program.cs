@@ -32,24 +32,23 @@ namespace Demo_LINQ_ClassOfProducts
             // Write the following methods
             //
 
-
             // OrderByUnits(): List the names and units of all products with less than 10 units in stock. Order by units.
             OrderByUnitsAnonymous(productList);
-
-
 
             // OrderByPrice(): List all products with a unit price less than $10. Order by price.
             OrderedByPriceAnonymous(productList);
 
-
             // FindExpensive(): List the most expensive Seafood. Consider there may be more than one.
-            FindExpensive(productList);
+            FindExpensiveAnonymous(productList);
 
             // OrderByTotalValue(): List all condiments with total value in stock (UnitPrice * UnitsInStock). Sort by total value.
+            OrderByTotalValueAnonymous(productList);
 
             // OrderByName(): List all products with names that start with "S" and calculate the average of the units in stock.
+            OrderByNameAnonymous(productList);
 
             // Query: Student Choice - Minimum of one per team member
+            OrderByGrainCereal(productList);
         }
 
 
@@ -118,7 +117,7 @@ namespace Demo_LINQ_ClassOfProducts
         }
 
         //
-        //Ordered By Units
+        // Ordered By Units
         //
         private static void OrderByUnitsAnonymous(List<Product> products)
         {
@@ -164,6 +163,9 @@ namespace Demo_LINQ_ClassOfProducts
             Console.ReadKey();
         }
 
+        //
+        // Ordered by Price
+        //
         private static void OrderedByPriceAnonymous(List<Product> products)
         {
             string TAB = "   ";
@@ -175,25 +177,25 @@ namespace Demo_LINQ_ClassOfProducts
             //
             // query syntax
             //
-            //var unitPrice =
-            //    from product in products
-            //    where product.UnitPrice < 10
-            //    orderby product.UnitPrice descending
-            //    select new
-            //    {
-            //        Name = product.ProductName,
-            //        Price = product.UnitPrice
-            //    };
+            var unitPrice =
+                from product in products
+                where product.UnitPrice < 10
+                orderby product.UnitPrice descending
+                select new
+                {
+                    Name = product.ProductName,
+                    Price = product.UnitPrice
+                };
 
 
             //
             // lambda syntax
             //
-            var unitPrice = products.Where(p => p.UnitPrice < 10).OrderByDescending(p => p.UnitPrice).Select(p => new
-            {
-                Name = p.ProductName,
-                Price = p.UnitPrice
-            });
+            //var unitPrice = products.Where(p => p.UnitPrice < 10).OrderByDescending(p => p.UnitPrice).Select(p => new
+            //{
+            //    Name = p.ProductName,
+            //    Price = p.UnitPrice
+            //});
 
             Console.WriteLine(TAB + "Product Name".PadRight(20) + "Unit Price".PadLeft(25));
             Console.WriteLine(TAB + "------------".PadRight(20) + "----------".PadLeft(25));
@@ -208,6 +210,9 @@ namespace Demo_LINQ_ClassOfProducts
             Console.ReadKey();
         }
 
+        //
+        // Ordered by Catagory
+        //
         private static void OrderByCatagoryAnoymous(List<Product> products)
         {
             string TAB = "   ";
@@ -261,7 +266,7 @@ namespace Demo_LINQ_ClassOfProducts
         //
         // Find most expensive
         //
-        private static void FindExpensive(List<Product> products)
+        private static void FindExpensiveAnonymous(List<Product> products)
         {
             string TAB = "   ";
 
@@ -285,7 +290,7 @@ namespace Demo_LINQ_ClassOfProducts
             //
             // lambda syntax
             //
-            //var sortedProducts = products.Where(p => p.Category == "Beverages" && p.UnitPrice > 0).OrderByDescending(p => p.UnitPrice).Select(p => new
+            //var expSeafood = products.Where(p => p.Category == "Seafood").OrderByDescending(p => p.UnitPrice).Select(p => new
             //{
             //    Name = p.ProductName,
             //    Price = p.UnitPrice
@@ -304,6 +309,140 @@ namespace Demo_LINQ_ClassOfProducts
 
             Console.WriteLine();
             Console.WriteLine(TAB + "Average Price:".PadRight(20) + average.ToString("C2").PadLeft(20));
+
+            Console.WriteLine();
+            Console.WriteLine(TAB + "Press any key to continue.");
+            Console.ReadKey();
+        }
+
+        //
+        // Ordered By Total Value
+        //
+        static private void OrderByTotalValueAnonymous(List<Product> products)
+        {
+            string TAB = "   ";
+
+            Console.Clear();
+            Console.WriteLine(TAB + "List all condiments with total value in stock (UnitPrice * UnitsInStock). Sort by total value.");
+            Console.WriteLine();
+
+            //
+            // query syntax
+            //
+            var totValue =
+                from product in products
+                where product.Category == "Condiments"
+                orderby (product.UnitPrice * product.UnitsInStock) descending
+                select new
+                {
+                    Name = product.ProductName,
+                    totalValue = (product.UnitPrice * product.UnitsInStock)
+                };
+
+            //
+            // lambda syntax
+            //
+            //var totValue = products.Where(p => p.Category == "Condiments").OrderByDescending(p => (p.UnitPrice * p.UnitsInStock)).Select(p => new
+            //{
+            //    Name = p.ProductName,
+            //    totalValue = (p.UnitPrice * p.UnitsInStock)
+            //});
+
+
+            Console.WriteLine(TAB + "Product Name".PadRight(20) + "Total Value".PadLeft(40));
+            Console.WriteLine(TAB + "------------".PadRight(20) + "-----------".PadLeft(40));
+
+            foreach (var product in totValue)
+            {
+                Console.WriteLine(TAB + product.Name.PadRight(20) + product.totalValue.ToString("C2").PadLeft(35));
+            }
+
+            Console.WriteLine();
+            Console.WriteLine(TAB + "Press any key to continue.");
+            Console.ReadKey();
+        }
+
+        //
+        // Order By Name
+        //
+        static private void OrderByNameAnonymous(List<Product> products)
+        {
+            string TAB = "   ";
+
+            Console.Clear();
+            Console.WriteLine(TAB + "List all products with names that start with 'S' and calculate the average of the units in stock.");
+            Console.WriteLine();
+
+            //
+            // query syntax
+            //
+            var avgUnit =
+                from product in products
+                where product.ProductName.StartsWith("S")
+                orderby (product.UnitsInStock) descending
+                select new
+                {
+                    Name = product.ProductName,
+                };
+
+            //
+            // lambda syntax
+            //
+            //var avgUnit = products.Where(p => p.ProductName.StartsWith("S")).OrderByDescending(p => p.UnitsInStock).Select(p => new
+            //{
+            //    Name = p.ProductName,
+            //});
+
+            decimal average = products.Average(p => p.UnitPrice);
+
+            Console.WriteLine(TAB + "Product Name".PadRight(20));
+            Console.WriteLine(TAB + "------------".PadRight(20));
+
+            foreach (var product in avgUnit)
+            {
+                Console.WriteLine(TAB + product.Name.PadRight(20));
+            }
+
+            Console.WriteLine();
+            Console.WriteLine(TAB + "Average Units in Stock:".PadRight(20) + average.ToString("C2").PadLeft(20));
+
+            Console.WriteLine();
+            Console.WriteLine(TAB + "Press any key to continue.");
+            Console.ReadKey();
+        }
+
+        //
+        // Student Choice - Order By Grains and Cereals
+        //
+        static private void OrderByGrainCereal(List<Product> products)
+        {
+            string TAB = "   ";
+
+            Console.Clear();
+            Console.WriteLine(TAB + "List all Grains and Cereals and sort by the unit in stock.");
+            Console.WriteLine();
+
+            //
+            // query syntax
+            //
+            var sortedProducts =
+                from product in products
+                where product.Category == "Grains/Cereals"
+                orderby product.UnitPrice descending
+                select product;
+
+            //
+            // lambda syntax
+            //
+            //var sortedProducts = products.Where(p => p.Category == "Grains/Cereals").OrderByDescending(p => p.UnitPrice);
+
+            Console.WriteLine(TAB + "Category".PadRight(15) + "Product Name".PadRight(25) + "Unit Price".PadLeft(15));
+            Console.WriteLine(TAB + "--------".PadRight(15) + "------------".PadRight(25) + "----------".PadLeft(15));
+
+            foreach (Product product in sortedProducts)
+            {
+                Console.WriteLine(TAB + product.Category.PadRight(15) + product.ProductName.PadRight(25) + product.UnitPrice.ToString("C2").PadLeft(10));
+            }
 
             Console.WriteLine();
             Console.WriteLine(TAB + "Press any key to continue.");
